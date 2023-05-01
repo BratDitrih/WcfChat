@@ -4,7 +4,7 @@ using System.Linq;
 using System.ServiceModel;
 using System.Text;
 
-namespace WcfChatService
+namespace WcfChat
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class WcfChatService : IWcfChatSevice

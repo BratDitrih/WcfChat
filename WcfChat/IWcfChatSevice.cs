@@ -1,6 +1,6 @@
 ﻿using System.ServiceModel;
 
-namespace WcfChatService
+namespace WcfChat
 {
     [ServiceContract(CallbackContract = typeof(IMessageCallBack))]
     public interface IWcfChatSevice

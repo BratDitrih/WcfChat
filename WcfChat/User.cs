@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ServiceModel;
 
-namespace WcfChatService
+namespace WcfChat
 {
     public class User
     {
