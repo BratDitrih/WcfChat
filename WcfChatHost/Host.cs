@@ -28,7 +28,7 @@ namespace WcfChatHost
             var binding = new NetTcpBinding();
             binding.PortSharingEnabled = true;
             binding.Security.Mode = SecurityMode.None;
-            host.AddServiceEndpoint(typeof(IWcfChatSevice), binding, "net.tcp://localhost:8080/MyService");
+            host.AddServiceEndpoint(typeof(IWcfChatSevice), binding, "net.tcp://localhost:8080/WcfChatService");
 
             host.Description.Behaviors.Remove<ServiceDebugBehavior>();
             host.Description.Behaviors.Remove<ServiceMetadataBehavior>();
