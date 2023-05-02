@@ -86,18 +86,28 @@ namespace WcfChatClient
 
         public IAsyncResult BeginGetMessage(string message, AsyncCallback callback, object asyncState)
         {
-            throw new NotImplementedException();
+            Action<string> getMessageFunc = GetMessage;
+            return getMessageFunc.BeginInvoke(message, callback, asyncState);
         }
 
         public void EndGetMessage(IAsyncResult result)
         {
-            throw new NotImplementedException();
+            var getMessageFunc = ((Action<string>)result.AsyncState);
+            getMessageFunc.EndInvoke(result);
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (_client == null) return;
-            IAsyncResult result = _client.BeginDisconnect(_id, _ => _client = null, null);
+            if (_isConnect)
+            {
+                await Dispatcher.BeginInvoke(new Action(async () =>
+                {
+                    await Task.Run(() => _client.Disconnect(_id));
+                    _client = null;
+                    _isConnect = false;
+                }));
+            }
         }
     }
 }
