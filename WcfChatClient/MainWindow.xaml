@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WcfChatClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" FontSize="10">
+        Title="MainWindow" Height="450" Width="800" FontSize="14">
     <DockPanel Margin="10">
         <WrapPanel DockPanel.Dock="Top" ItemHeight="40" Height="40">
             <TextBox x:Name="txtUserName" Tag="Имя пользователя" Width="250" GotFocus="txtBox_GotFocus"

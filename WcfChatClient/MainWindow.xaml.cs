@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,20 +31,22 @@ namespace WcfChatClient
             InitializeComponent();
         }
 
-        private void btnConnect_Click(object sender, RoutedEventArgs e)
+        private async void btnConnect_Click(object sender, RoutedEventArgs e)
         {
-            IAsyncResult result = null;
             if (_isConnect == false)
             {
                 _client = new WcfChatSeviceClient(new System.ServiceModel.InstanceContext(this));
-                result = _client.BeginConnect(txtUserName.Text, _ => _id = _client.EndConnect(result), null);
+                string userName = null;
+                Dispatcher.Invoke(() => userName = txtUserName.Text);
+                var result = await Task.Run(() => _client.Connect(userName));
+                _id = result;
                 _isConnect = true;
                 txtUserName.IsEnabled = false;
                 btnConnect.Content = "Отключиться";
             }
             else
             {
-                result = _client.BeginDisconnect(_id, _ => _client = null, null);
+                await Task.Run(() => _client.Disconnect(_id));
                 _isConnect = false;
                 txtUserName.IsEnabled = true;
                 btnConnect.Content = "Подключиться";
@@ -74,9 +77,11 @@ namespace WcfChatClient
 
         public void GetMessage(string message)
         {
-            listMessages.Items.Add(message);
-            //listMessages.ScrollIntoView(listMessages.Items[listMessages.Items.Count - 1]);
-            listMessages.ScrollToBottom();
+            Dispatcher.Invoke(() =>
+            {
+                listMessages.Items.Add(message);
+                listMessages.ScrollToBottom();
+            });
         }
 
         public IAsyncResult BeginGetMessage(string message, AsyncCallback callback, object asyncState)
