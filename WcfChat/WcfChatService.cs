@@ -47,20 +47,21 @@ namespace WcfChat
             DateTime dispatchTime = DateTime.Now;
 
             string senderName;
-            if (senderUserId == null) senderName = "";
+            if (senderUserId == null) senderName = "Server";
             else
             {
                 var senderUser = _users.FirstOrDefault(x => x.Id == senderUserId);
                 if (senderUser == null) return;
-                senderName = " " + senderUser.Name;
+                senderName = senderUser.Name;
             }
 
-            stringBuilder.Append(dispatchTime.ToShortTimeString() + senderName + ": " + message);
+            stringBuilder.Append(dispatchTime.ToShortTimeString() + " " + senderName + ": " + message);
 
             var newMessage = new Message()
             {
                 Text = message,
                 SenderUserId = senderUserId,
+                SenderUserName = senderName,
                 SendTime = dispatchTime
             };
             _repository.Add(newMessage);
@@ -70,6 +71,12 @@ namespace WcfChat
                 user.OperationContext.GetCallbackChannel<IMessageCallBack>()
                     .GetMessage(stringBuilder.ToString());
             }
+        }
+
+        public IList<string> GetAllMessages()
+        {
+            var messages = _repository.GetAll();
+            return messages.Select(x => x.ToString()).ToList();
         }
     }
 }

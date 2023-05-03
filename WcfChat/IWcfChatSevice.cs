@@ -1,4 +1,6 @@
-﻿using System.ServiceModel;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.ServiceModel;
 
 namespace WcfChat
 {
@@ -13,6 +15,9 @@ namespace WcfChat
 
         [OperationContract(IsOneWay = true)]
         void SendMessage(string message, string senderUserId);
+
+        [OperationContract]
+        IList<string> GetAllMessages();
     }
 
     public interface IMessageCallBack

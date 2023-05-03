@@ -87,6 +87,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Migrations\202305031841055_AddSenderUserName.cs" />
+    <Compile Include="Migrations\202305031841055_AddSenderUserName.designer.cs">
+      <DependentUpon>202305031841055_AddSenderUserName.cs</DependentUpon>
+    </Compile>
     <Compile Include="Repository\MessageRepository.cs" />
     <Compile Include="Repository\IRepository.cs" />
     <Compile Include="Message.cs" />
@@ -105,6 +109,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202305030637436_InitialCreate.resx">
       <DependentUpon>202305030637436_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202305031841055_AddSenderUserName.resx">
+      <DependentUpon>202305031841055_AddSenderUserName.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

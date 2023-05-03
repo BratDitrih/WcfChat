@@ -35,21 +35,39 @@ namespace WcfChatClient
         {
             if (_isConnect == false)
             {
-                _client = new WcfChatSeviceClient(new System.ServiceModel.InstanceContext(this));
+                txtUserName.IsEnabled = false;
+                btnConnect.IsEnabled = false;
+                Mouse.OverrideCursor = Cursors.Wait;
+
+                _client = new WcfChatSeviceClient(new System.ServiceModel.InstanceContext(this), "NetTcpBinding_IWcfChatSevice");
+                var messages = _client.GetAllMessages();
+                foreach (var message in messages)
+                {
+                    listMessages.Items.Add(message);
+                }
                 string userName = null;
                 Dispatcher.Invoke(() => userName = txtUserName.Text);
                 var result = await Task.Run(() => _client.Connect(userName));
                 _id = result;
+
                 _isConnect = true;
-                txtUserName.IsEnabled = false;
                 btnConnect.Content = "Отключиться";
+                btnConnect.IsEnabled = true;
+                Mouse.OverrideCursor = Cursors.Arrow;
             }
             else
             {
+                btnConnect.IsEnabled = false;
+                Mouse.OverrideCursor = Cursors.Wait;
+
                 await Task.Run(() => _client.Disconnect(_id));
+                _client = null;
+
                 _isConnect = false;
-                txtUserName.IsEnabled = true;
                 btnConnect.Content = "Подключиться";
+                btnConnect.IsEnabled = true;
+                txtUserName.IsEnabled = true;
+                Mouse.OverrideCursor = Cursors.Arrow;
                 txtUserName.Style = FindResource("GrayTextStyle") as Style;
             }
         }

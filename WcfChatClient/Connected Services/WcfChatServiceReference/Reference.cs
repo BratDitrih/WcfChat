@@ -38,6 +38,14 @@ namespace WcfChatClient.WcfChatServiceReference {
         System.IAsyncResult BeginSendMessage(string message, string senderUserId, System.AsyncCallback callback, object asyncState);
         
         void EndSendMessage(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfChatSevice/GetAllMessages", ReplyAction="http://tempuri.org/IWcfChatSevice/GetAllMessagesResponse")]
+        string[] GetAllMessages();
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IWcfChatSevice/GetAllMessages", ReplyAction="http://tempuri.org/IWcfChatSevice/GetAllMessagesResponse")]
+        System.IAsyncResult BeginGetAllMessages(System.AsyncCallback callback, object asyncState);
+        
+        string[] EndGetAllMessages(System.IAsyncResult result);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -77,6 +85,25 @@ namespace WcfChatClient.WcfChatServiceReference {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public partial class GetAllMessagesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetAllMessagesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public string[] Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((string[])(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     public partial class WcfChatSeviceClient : System.ServiceModel.DuplexClientBase<WcfChatClient.WcfChatServiceReference.IWcfChatSevice>, WcfChatClient.WcfChatServiceReference.IWcfChatSevice {
         
         private BeginOperationDelegate onBeginConnectDelegate;
@@ -96,6 +123,12 @@ namespace WcfChatClient.WcfChatServiceReference {
         private EndOperationDelegate onEndSendMessageDelegate;
         
         private System.Threading.SendOrPostCallback onSendMessageCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetAllMessagesDelegate;
+        
+        private EndOperationDelegate onEndGetAllMessagesDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetAllMessagesCompletedDelegate;
         
         public WcfChatSeviceClient(System.ServiceModel.InstanceContext callbackInstance) : 
                 base(callbackInstance) {
@@ -122,6 +155,8 @@ namespace WcfChatClient.WcfChatServiceReference {
         public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> DisconnectCompleted;
         
         public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> SendMessageCompleted;
+        
+        public event System.EventHandler<GetAllMessagesCompletedEventArgs> GetAllMessagesCompleted;
         
         public string Connect(string userName) {
             return base.Channel.Connect(userName);
@@ -271,6 +306,54 @@ namespace WcfChatClient.WcfChatServiceReference {
             base.InvokeAsync(this.onBeginSendMessageDelegate, new object[] {
                         message,
                         senderUserId}, this.onEndSendMessageDelegate, this.onSendMessageCompletedDelegate, userState);
+        }
+        
+        public string[] GetAllMessages() {
+            return base.Channel.GetAllMessages();
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetAllMessages(System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetAllMessages(callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public string[] EndGetAllMessages(System.IAsyncResult result) {
+            return base.Channel.EndGetAllMessages(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetAllMessages(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            return this.BeginGetAllMessages(callback, asyncState);
+        }
+        
+        private object[] OnEndGetAllMessages(System.IAsyncResult result) {
+            string[] retVal = this.EndGetAllMessages(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetAllMessagesCompleted(object state) {
+            if ((this.GetAllMessagesCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetAllMessagesCompleted(this, new GetAllMessagesCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetAllMessagesAsync() {
+            this.GetAllMessagesAsync(null);
+        }
+        
+        public void GetAllMessagesAsync(object userState) {
+            if ((this.onBeginGetAllMessagesDelegate == null)) {
+                this.onBeginGetAllMessagesDelegate = new BeginOperationDelegate(this.OnBeginGetAllMessages);
+            }
+            if ((this.onEndGetAllMessagesDelegate == null)) {
+                this.onEndGetAllMessagesDelegate = new EndOperationDelegate(this.OnEndGetAllMessages);
+            }
+            if ((this.onGetAllMessagesCompletedDelegate == null)) {
+                this.onGetAllMessagesCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetAllMessagesCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetAllMessagesDelegate, null, this.onEndGetAllMessagesDelegate, this.onGetAllMessagesCompletedDelegate, userState);
         }
     }
 }
