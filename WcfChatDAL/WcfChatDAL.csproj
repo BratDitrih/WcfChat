@@ -87,15 +87,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MessageRepository.cs" />
-    <Compile Include="IRepository.cs" />
+    <Compile Include="Repository\MessageRepository.cs" />
+    <Compile Include="Repository\IRepository.cs" />
     <Compile Include="Message.cs" />
+    <Compile Include="Migrations\202305030637436_InitialCreate.cs" />
+    <Compile Include="Migrations\202305030637436_InitialCreate.designer.cs">
+      <DependentUpon>202305030637436_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WcfChatDbContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\202305030637436_InitialCreate.resx">
+      <DependentUpon>202305030637436_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

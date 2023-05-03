@@ -9,8 +9,8 @@ namespace WcfChatDAL
     public class Message
     {
         public int Id { get; set; }
-        public string Sender { get; set; }
-        public DateTime SendTime { get; set; }
+        public string SenderUserId { get; set; }
         public string Text { get; set; }
+        public DateTime SendTime { get; set; }
     }
 }
