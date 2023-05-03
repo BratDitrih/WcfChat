@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
+using WcfChatDAL;
 
 namespace WcfChat
 {
@@ -10,6 +11,12 @@ namespace WcfChat
     public class WcfChatService : IWcfChatSevice
     {
         private IList<User> _users = new List<User>();
+        private readonly MessageRepository _repository;
+
+        public WcfChatService()
+        {
+            _repository = new MessageRepository();
+        }
 
         public string Connect(string userName)
         {
@@ -37,7 +44,7 @@ namespace WcfChat
         {
             StringBuilder stringBuilder = new StringBuilder();
 
-            string dispatchTime = DateTime.Now.ToShortTimeString();
+            DateTime dispatchTime = DateTime.Now;
 
             string senderName;
             if (senderUserId == null) senderName = "";
@@ -48,7 +55,15 @@ namespace WcfChat
                 senderName = " " + senderUser.Name;
             }
 
-            stringBuilder.Append(dispatchTime + senderName + ": " + message);
+            stringBuilder.Append(dispatchTime.ToShortTimeString() + senderName + ": " + message);
+
+            var newMessage = new Message()
+            {
+                Text = message,
+                SenderUserId = senderUserId,
+                SendTime = dispatchTime
+            };
+            _repository.Add(newMessage);
 
             foreach (var user in _users)
             {
