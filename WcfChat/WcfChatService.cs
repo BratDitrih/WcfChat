@@ -15,7 +15,15 @@ namespace WcfChat
 
         public WcfChatService()
         {
-            _repository = new MessageRepository();
+            try
+            {
+                _repository = new MessageRepository();
+            }
+            catch
+            {
+                throw new Exception("Ошибка при подключении к БД");
+            }
+            
         }
 
         public string Connect(string userName)
@@ -64,7 +72,14 @@ namespace WcfChat
                 SenderUserName = senderName,
                 SendTime = dispatchTime
             };
-            _repository.Add(newMessage);
+            try
+            {
+                _repository.Add(newMessage);
+            }
+            catch
+            {
+                throw new Exception("Ошибка при добавлении сообщения в БД");
+            }
 
             foreach (var user in _users)
             {
@@ -75,8 +90,15 @@ namespace WcfChat
 
         public IList<string> GetAllMessages()
         {
-            var messages = _repository.GetAll();
-            return messages.Select(x => x.ToString()).ToList();
+            try
+            {
+                var messages = _repository.GetAll();
+                return messages.Select(x => x.ToString()).ToList();
+            }
+            catch
+            {
+                throw new Exception("Ошибка при запросе сообщений из БД");
+            }
         }
     }
 }

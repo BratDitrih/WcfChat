@@ -1,20 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using WcfChatClient.WcfChatServiceReference;
+using System.ServiceModel;
 
 namespace WcfChatClient
 {
@@ -38,12 +28,22 @@ namespace WcfChatClient
                 txtUserName.IsEnabled = false;
                 btnConnect.IsEnabled = false;
                 Mouse.OverrideCursor = Cursors.Wait;
-
-                _client = new WcfChatSeviceClient(new System.ServiceModel.InstanceContext(this), "NetTcpBinding_IWcfChatSevice");
-                var messages = _client.GetAllMessages();
-                foreach (var message in messages)
+                
+                try
                 {
-                    listMessages.Items.Add(message);
+                    _client = new WcfChatSeviceClient(new InstanceContext(this), "NetTcpBinding_IWcfChatSevice");
+                    var messages = _client.GetAllMessages();
+                    foreach (var message in messages)
+                    {
+                        listMessages.Items.Add(message);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error) == MessageBoxResult.OK)
+                    {
+                        Close();
+                    }
                 }
                 string userName = null;
                 Dispatcher.Invoke(() => userName = txtUserName.Text);
@@ -60,7 +60,17 @@ namespace WcfChatClient
                 btnConnect.IsEnabled = false;
                 Mouse.OverrideCursor = Cursors.Wait;
 
-                await Task.Run(() => _client.Disconnect(_id));
+                try
+                {
+                    await Task.Run(() => _client.Disconnect(_id));
+                }
+                catch (Exception ex)
+                {
+                    if (MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error) == MessageBoxResult.OK)
+                    {
+                        Close();
+                    }
+                }
                 _client = null;
 
                 _isConnect = false;
@@ -77,8 +87,18 @@ namespace WcfChatClient
             if (_client == null) return;
             if (e.Key == Key.Enter)
             {
-                _client.SendMessage(txtMessage.Text, _id);
-                txtMessage.Text = string.Empty;
+                try
+                {
+                    _client.SendMessage(txtMessage.Text, _id);
+                    txtMessage.Text = string.Empty;
+                }
+                 catch (Exception ex)
+                {
+                    if (MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error) == MessageBoxResult.OK)
+                    {
+                        Close();
+                    }
+                }
             }
         }
 
@@ -114,12 +134,12 @@ namespace WcfChatClient
             getMessageFunc.EndInvoke(result);
         }
 
-        private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (_client == null) return;
             if (_isConnect)
             {
-                await Dispatcher.BeginInvoke(new Action(async () =>
+                Dispatcher.Invoke(new Action(async () =>
                 {
                     await Task.Run(() => _client.Disconnect(_id));
                     _client = null;
